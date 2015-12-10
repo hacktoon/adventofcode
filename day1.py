@@ -29,7 +29,7 @@ What is the position of the character that causes Santa to first enter the basem
 
 '''
 
-with open('day1.txt') as f:
+with open('input/day1.txt') as f:
     instructions = f.read()
 
 floor = 0

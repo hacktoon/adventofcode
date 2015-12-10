@@ -32,7 +32,7 @@ def parse(dt):
     l = dt.strip().split(' ')
     return (l[0], l[2], int(l[4]))
 
-with open('day9.txt') as f:
+with open('input/day9.txt') as f:
     raw_distances = f.readlines()
 
 cities = set()

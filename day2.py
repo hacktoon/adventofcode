@@ -25,7 +25,7 @@ A present with dimensions 1x1x10 requires 1+1+1+1 = 4 feet of ribbon to wrap the
 How many total feet of ribbon should they order?
 '''
 
-with open('day2.txt') as f:
+with open('input/day2.txt') as f:
     instructions = f.readlines()
 
 

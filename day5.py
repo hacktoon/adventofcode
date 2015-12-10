@@ -21,7 +21,7 @@ How many strings are nice?
 
 import re
 
-with open('day5.txt') as f:
+with open('input/day5.txt') as f:
     words = f.readlines()
 
 

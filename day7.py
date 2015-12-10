@@ -87,7 +87,7 @@ def parse(line):
     wires[tokens[-1]] = normalize_value(val)
 
 
-with open('day7.txt') as f:
+with open('input/day7.txt') as f:
     instructions = f.readlines()
 
 for i in instructions:

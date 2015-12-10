@@ -20,7 +20,7 @@ After following the instructions, how many lights are lit?
 
 import re
 
-with open('day6.txt') as f:
+with open('input/day6.txt') as f:
     instructions = f.readlines()
 
 

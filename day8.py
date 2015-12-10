@@ -41,7 +41,7 @@ def clean(line):
 def encode(line):
     return '"{}"'.format(line.replace('\\', '\\\\').replace('"', '\\"'))
 
-with open('day8.txt', 'r', encoding='ascii') as f:
+with open('input/day8.txt', 'r', encoding='ascii') as f:
     strings = f.readlines()
 
 for s in strings:
