@@ -43,7 +43,9 @@ import operator
 
 MAX = 65535
 
+# variable table
 wires = {}
+
 commands = {
     'AND': operator.and_,
     'OR': operator.or_,
@@ -69,19 +71,13 @@ def parse(line):
     first_token = tokens[0]
     if first_token == 'NOT':
         val = MAX - process_param(tokens[1])
-    elif first_token.isalpha():
+    else:
         param1 = process_param(first_token)
-        if tokens[1] in commands.keys():  # xy AND 7...
+        cmd_name = tokens[1]
+        if cmd_name in commands.keys():  # xy AND 7...
             param2 = process_param(tokens[2])
-            val = commands[tokens[1]](param1, param2)
+            val = commands[cmd_name](param1, param2)
         else:  # x -> f
-            val = param1
-    elif first_token.isdigit():
-        param1 = int(first_token)
-        if tokens[1] in commands.keys():  # 55 AND 44...
-            param2 = process_param(tokens[2])
-            val = commands[tokens[1]](param1, param2)
-        else:  # 55 ->...
             val = param1
 
     wires[tokens[-1]] = normalize_value(val)
@@ -92,8 +88,8 @@ with open('input/day7.txt') as f:
 
 for i in instructions:
     parse(i)
-print(wires)
 
+print(wires)
 print('Value of wire a: {}'.format(wires.get('a')))
 
 
