@@ -28,6 +28,7 @@ from itertools import permutations
 
 
 def parse(dt):
+    ''' parse an expression like 'London to Belfast = 518 '''
     l = dt.strip().split(' ')
     return (l[0], l[2], int(l[4]))
 
@@ -42,10 +43,8 @@ for dt in raw_distances:
     dist_info = parse(dt)
     from_city = dist_info[0]
     to_city = dist_info[1]
-    cities.add(from_city)
-    cities.add(to_city)
-    distances[(from_city, to_city)] = dist_info[2]
-    distances[(to_city, from_city)] = dist_info[2]
+    cities = cities.union({from_city, to_city})
+    distances[(from_city, to_city)] = distances[(to_city, from_city)] = dist_info[2]
 
 for route in permutations(cities):
     total_distance = 0
@@ -56,11 +55,16 @@ for route in permutations(cities):
         routes.append({'route': route, 'distance': total_distance})
 
 routes = sorted(routes, key=lambda x: x['distance'])
-print(routes[0])
-print(routes[-1])
+print('Shortest route is {!r}, with distance = {!r}'.format(routes[0]['route'], routes[0]['distance']))
+
 
 '''
 --- Part Two ---
-
+The next year, just to show off, Santa decides to take the route with the longest distance instead.
+He can still start and end at any two (different) locations he wants, and he still must visit each location exactly once.
+For example, given the distances above, the longest route would be 982 via (for example) Dublin -> London -> Belfast.
+What is the distance of the longest route?
 
 '''
+
+print('Longest route is {!r}, with distance = {!r}'.format(routes[-1]['route'], routes[-1]['distance']))
