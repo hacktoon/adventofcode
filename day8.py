@@ -23,10 +23,11 @@ Disregarding the whitespace in the file, what is the number of characters of cod
 For example, given the four strings above, the total number of characters of string code (2 + 5 + 10 + 6 = 23) minus the total number of characters in memory for string values (0 + 3 + 7 + 1 = 11) is 23 - 11 = 12.
 '''
 
-import re, sys
+import re
 
 total_chars = 0
 total_memory = 0
+total_encoded = 0
 
 
 def clean(line):
@@ -36,6 +37,10 @@ def clean(line):
     line = line.replace('\\"', '"')
     return line
 
+
+def encode(line):
+    return '"{}"'.format(line.replace('\\', '\\\\').replace('"', '\\"'))
+
 with open('day8.txt', 'r', encoding='ascii') as f:
     strings = f.readlines()
 
@@ -43,10 +48,10 @@ for s in strings:
     s = s.strip()
     total_chars += len(s)
     total_memory += len(clean(s))
-    #print(total_chars, total_memory, clean(s))
-    #sys.exit()
+    total_encoded += len(encode(s))
 
-print('Total de caracteres literais - em memoria: {}'.format(total_chars - total_memory))
+print('Total de caracteres literais subtraindo caracteres em memoria: {}'.format(total_chars - total_memory))
+
 
 '''
 --- Part Two ---
@@ -61,3 +66,5 @@ For example:
 "\x27" encodes to "\"\\x27\"", an increase from 6 characters to 11.
 Your task is to find the total number of characters to represent the newly encoded strings minus the number of characters of code in each original string literal. For example, for the strings above, the total encoded length (6 + 9 + 16 + 11 = 42) minus the characters in the original code representation (23, just like in the first part of this puzzle) is 42 - 23 = 19.
 '''
+
+print('Total de caracteres encodados subtraindo caracteres literais: {}'.format(total_encoded - total_chars))
