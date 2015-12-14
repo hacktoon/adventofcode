@@ -53,24 +53,28 @@ commands = {
     'LSHIFT': operator.lshift
 }
 
+instmap = {}
+
 
 def normalize_value(val):
-    return val
+    return ((val % MAX) + MAX) % MAX
 
 
 def process_param(param):
     if param.isdigit():
-        param = int(param)
-    else:
-        return int(wires.get(param, 0))
-    return param
+        return int(param)
+    try:
+        return int(wires[param])
+    except:
+        pass
 
 
 def parse(line):
     tokens = line.strip().split(' ')
     first_token = tokens[0]
+    var_name = tokens[-1]
     if first_token == 'NOT':
-        val = MAX - process_param(tokens[1])
+        val = ~process_param(tokens[1]) & 0xffff
     else:
         param1 = process_param(first_token)
         cmd_name = tokens[1]
@@ -80,7 +84,18 @@ def parse(line):
         else:  # x -> f
             val = param1
 
-    wires[tokens[-1]] = normalize_value(val)
+    wires[var_name] = normalize_value(val)
+    instmap[var_name] = ()
+
+
+def get_value(var_name):
+    inst = wire[instmap[var_name]]
+    try:
+        val = int(inst)
+    except ValueError:
+        pass
+    val = parse(inst)
+    return val
 
 
 with open('input/day7.txt') as f:
