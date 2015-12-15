@@ -43,17 +43,15 @@ import operator
 
 MAX = 65535
 
-# variable table
 wires = {}
-
-commands = {
+instmap = {}
+cmd_map = {
+    'NOT': lambda x: ~x & MAX,
     'AND': operator.and_,
     'OR': operator.or_,
     'RSHIFT': operator.rshift,
     'LSHIFT': operator.lshift
 }
-
-instmap = {}
 
 
 def normalize_value(val):
@@ -63,10 +61,7 @@ def normalize_value(val):
 def process_param(param):
     if param.isdigit():
         return int(param)
-    try:
-        return int(wires[param])
-    except:
-        pass
+    return param
 
 
 def parse(line):
@@ -74,42 +69,49 @@ def parse(line):
     first_token = tokens[0]
     var_name = tokens[-1]
     if first_token == 'NOT':
-        val = ~process_param(tokens[1]) & 0xffff
+        cmd = (first_token, process_param(tokens[1]))
     else:
         param1 = process_param(first_token)
         cmd_name = tokens[1]
-        if cmd_name in commands.keys():  # xy AND 7...
+        if cmd_name in cmd_map.keys():  # xy AND 7...
             param2 = process_param(tokens[2])
-            val = commands[cmd_name](param1, param2)
+            cmd = (cmd_name, param1, param2)
         else:  # x -> f
-            val = param1
-
-    wires[var_name] = normalize_value(val)
-    instmap[var_name] = ()
+            cmd = param1
+    instmap[var_name] = cmd
 
 
-def get_value(var_name):
-    inst = wire[instmap[var_name]]
-    try:
-        val = int(inst)
-    except ValueError:
-        pass
-    val = parse(inst)
+def get_value(var):
+    if var in wires:
+        return wires[var]
+    inst = instmap.get(var, var)
+    if isinstance(inst, int):
+        return inst
+    if isinstance(inst, str):
+        return get_value(inst)
+    cmd = cmd_map[inst[0]]
+    if len(inst) == 3:
+        val = cmd(get_value(inst[1]), get_value(inst[2]))
+        val = normalize_value(val)
+    else:
+        val = cmd(get_value(inst[1]))
+    wires[var] = val
     return val
 
 
 with open('input/day7.txt') as f:
-    instructions = f.readlines()
+    for i in f.readlines():
+        parse(i)
 
-for i in instructions:
-    parse(i)
-
-print(wires)
-print('Value of wire a: {}'.format(wires.get('a')))
+wire_a = get_value('a')
+print('Value of wire a: {}'.format(wire_a))
 
 
 '''
 --- Part Two ---
-
+Now, take the signal you got on wire a, override wire b to that signal, and reset the other wires (including wire a). What new signal is ultimately provided to wire a?
 
 '''
+
+wires = {'b': wire_a}
+print('Value of wire a after reseting b: {}'.format(get_value('a')))
